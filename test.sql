@@ -37,6 +37,8 @@ VALUES (get_event_id_by_name('동아리 운영'), '동아리 인수인계비');
 INSERT INTO category (event_id, category_name)
 VALUES (get_event_id_by_name('동아리 운영'), '동아리 기본지원금');
 INSERT INTO category (event_id, category_name)
+VALUES (get_event_id_by_name('동아리 운영'), '동아리 비품');
+INSERT INTO category (event_id, category_name)
 VALUES (get_event_id_by_name('동아리 운영'), '악기 대여');
 INSERT INTO category (event_id, category_name)
 VALUES (get_event_id_by_name('동아리 운영'), '악기 공구');

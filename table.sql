@@ -116,6 +116,18 @@ CREATE TABLE budget
             CHECK ( EXTRACT(YEAR FROM budget_date) BETWEEN 2018 AND 2100)
 );
 
+create or REPLACE FUNCTION get_semester_start_date
+    RETURN DATE IS
+    result Date := sysdate;
+BEGIN
+    IF extract(month from sysdate) between 3 and 8 then
+        select to_date(to_char(extract(year from sysdate)) || '0301' , 'YYYYMMDD') into result from dual;
+    else
+        select to_date(to_char(extract(year from sysdate)) || '0901' , 'YYYYMMDD') into result from dual;
+    END IF;
+    RETURN result;
+END;
+
 CREATE TABLE transaction
 (
     transaction_id          NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
@@ -133,6 +145,7 @@ CREATE TABLE transaction
     CONSTRAINT account_amount_integer
         CHECK ( TRUNC(transaction_amount) = transaction_amount ),
     transaction_date        DATE
+        DEFAULT get_semester_start_date()
         CONSTRAINT account_transaction_date_year_range
             CHECK ( EXTRACT(YEAR FROM transaction_date) BETWEEN 2018 AND 2100)
 );

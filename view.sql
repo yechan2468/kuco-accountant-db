@@ -41,8 +41,7 @@ SELECT (SELECT SUM(t.transaction_amount)
         FROM transaction t
         WHERE t.transaction_date <= SYSDATE) AS balance,
        (SELECT SUM(t.transaction_amount)
-        FROM transaction t
-        WHERE t.transaction_date <= SYSDATE) AS expected_balance
+        FROM transaction t)                  AS expected_balance
 FROM transaction;
 
 
