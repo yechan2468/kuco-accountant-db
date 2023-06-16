@@ -25,6 +25,7 @@ BEGIN
             VALUES (etid, 2023, 1);
         END LOOP;
 END;
+/
 
 
 -- CATEGORY
@@ -254,12 +255,14 @@ BEGIN
     INSERT INTO fee (member_id, transaction_id) VALUES (2, 3);
     INSERT INTO fee (member_id, transaction_id) VALUES (3, 4);
 END;
+/
 
 -- GUEST PAY
 BEGIN
     INSERT INTO guest_pay (guest_id, transaction_id) VALUES (1, 5);
     INSERT INTO guest_pay (guest_id, transaction_id) VALUES (2, 6);
 END;
+/
 
 -- PARTICIPATION LIST
 BEGIN
@@ -267,3 +270,4 @@ BEGIN
     INSERT INTO participation_list (member_id, event_id) VALUES (2, get_event_id_by_name('정기연주회'));
     INSERT INTO participation_list (member_id, event_id) VALUES (3, get_event_id_by_name('정기연주회'));
 END;
+/
