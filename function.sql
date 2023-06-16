@@ -10,6 +10,7 @@ BEGIN
 END;
 
 
+
 CREATE OR REPLACE FUNCTION get_event_id_by_name(name IN VARCHAR2)
     RETURN NUMBER IS
     result NUMBER := 0;
