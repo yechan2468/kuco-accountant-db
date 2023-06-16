@@ -66,13 +66,14 @@ VALUES (4, '뒷풀이');
 INSERT INTO category (event_id, category_name)
 VALUES (5, '뒷풀이');
 
-CREATE OR REPLACE FUNCTION getcategoryidbyname(category_name IN VARCHAR2)
+CREATE OR REPLACE FUNCTION getcategoryidbyname(name IN VARCHAR2)
     RETURN NUMBER IS
     result NUMBER := 0;
 BEGIN
     SELECT category_id
     INTO result
-    FROM category;
+    FROM category
+    where category_name = name;
     RETURN result;
 END;
 
