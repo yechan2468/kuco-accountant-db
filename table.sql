@@ -2,7 +2,7 @@ CREATE TABLE member
 (
     member_id    NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
     CONSTRAINT member_id_pk PRIMARY KEY (member_id),
-    member_name  VARCHAR2(3 CHAR)
+    member_name  VARCHAR2(5 CHAR)
         CONSTRAINT member_name_nn NOT NULL,
     department   VARCHAR2(10 CHAR),
     gisu         NUMBER(3)
@@ -20,6 +20,17 @@ CREATE TABLE member
         CONSTRAINT member_graduated_nn NOT NULL
 );
 
+create table guest_type
+(
+    guest_type_id   NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+    CONSTRAINT guest_type_id_pk
+        PRIMARY KEY (guest_type_id),
+    guest_type_name VARCHAR2(4 CHAR)
+        CONSTRAINT guest_type_name_nn NOT NULL,
+        CONSTRAINT guest_type_enum
+        CHECK ( guest_type_name IN ('지휘자', '프로', '아마추어') )
+);
+
 CREATE TABLE guest
 (
     guest_id       NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
@@ -30,7 +41,7 @@ CREATE TABLE guest
         FOREIGN KEY (guest_type_id)
             REFERENCES guest_type (guest_type_id)
                 ON DELETE CASCADE,
-    guest_name     VARCHAR2(3 CHAR)
+    guest_name     VARCHAR2(5 CHAR)
         CONSTRAINT guest_name_nn NOT NULL,
     phone_number   VARCHAR2(11 CHAR)
         CONSTRAINT guest_phone_number_numeric
@@ -38,15 +49,13 @@ CREATE TABLE guest
     account_number VARCHAR2(20)
 );
 
-create table guest_type
+CREATE TABLE event_type
 (
-    guest_type_id   NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
-    CONSTRAINT guest_type_id_pk
-        PRIMARY KEY (guest_type_id),
-    guest_type_name VARCHAR2(4 CHAR)
-        CONSTRAINT guest_type_name_nn NOT NULL,
-        CONSTRAINT guest_type_enum
-        CHECK ( guest_type_name IN ('지휘자', '프로', '아마추어') )
+    event_type_id   NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+    CONSTRAINT event_type_id_pk
+        PRIMARY KEY (event_type_id),
+    event_type_name VARCHAR2(10 CHAR)
+        CONSTRAINT event_name_nn NOT NULL
 );
 
 CREATE TABLE event
@@ -69,15 +78,6 @@ CREATE TABLE event
         CONSTRAINT event_semester_nn NOT NULL,
     CONSTRAINT event_semester_range
         CHECK ( semester IN (1, 2) )
-);
-
-CREATE TABLE event_type
-(
-    event_type_id   NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
-    CONSTRAINT event_type_id_pk
-        PRIMARY KEY (event_type_id),
-    event_type_name VARCHAR2(10 CHAR)
-        CONSTRAINT event_name_nn NOT NULL
 );
 
 CREATE TABLE category
@@ -106,7 +106,7 @@ CREATE TABLE budget
         FOREIGN KEY (category_id)
             REFERENCES category (category_id)
                 ON DELETE CASCADE,
-    budget_description VARCHAR2(10 CHAR),
+    budget_description VARCHAR2(50 CHAR),
     budget_amount      NUMBER
         CONSTRAINT budget_amount_nn NOT NULL,
     CONSTRAINT budget_amount_integer
@@ -127,7 +127,7 @@ CREATE TABLE transaction
         FOREIGN KEY (category_id)
             REFERENCES category (category_id)
                 ON DELETE CASCADE,
-    transaction_description VARCHAR2(10 CHAR),
+    transaction_description VARCHAR2(50 CHAR),
     transaction_amount      NUMBER
         CONSTRAINT account_amount_nn NOT NULL,
     CONSTRAINT account_amount_integer

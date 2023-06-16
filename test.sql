@@ -26,54 +26,67 @@ BEGIN
         END LOOP;
 END;
 
+CREATE OR REPLACE FUNCTION get_event_id_by_name(name IN VARCHAR2)
+    RETURN NUMBER IS
+    result NUMBER := 0;
+BEGIN
+    SELECT event_type_id
+    INTO result
+    FROM event_type
+    WHERE event_type_name = name;
+    RETURN result;
+END;
+
 -- CATEGORY
 INSERT INTO category (event_id, category_name)
-VALUES (1, '동아리 정기회비');
+VALUES (get_event_id_by_name('동아리 운영'), '동아리 정기회비');
 INSERT INTO category (event_id, category_name)
-VALUES (1, '이전 학기 인수인계비');
+VALUES (get_event_id_by_name('동아리 운영'), '이전 학기 인수인계비');
 INSERT INTO category (event_id, category_name)
-VALUES (1, '동아리 인수인계비');
+VALUES (get_event_id_by_name('동아리 운영'), '동아리 인수인계비');
 INSERT INTO category (event_id, category_name)
-VALUES (1, '악기 대여');
+VALUES (get_event_id_by_name('동아리 운영'), '동아리 기본지원금');
 INSERT INTO category (event_id, category_name)
-VALUES (1, '악기 공구');
+VALUES (get_event_id_by_name('동아리 운영'), '악기 대여');
 INSERT INTO category (event_id, category_name)
-VALUES (1, '동아리 박람회');
+VALUES (get_event_id_by_name('동아리 운영'), '악기 공구');
 INSERT INTO category (event_id, category_name)
-VALUES (2, '회비');
+VALUES (get_event_id_by_name('동아리 운영'), '동아리 박람회');
 INSERT INTO category (event_id, category_name)
-VALUES (2, '콘서트홀 대관');
+VALUES (get_event_id_by_name('동아리 운영'), '회비');
 INSERT INTO category (event_id, category_name)
-VALUES (2, '연습실 대관');
+VALUES (get_event_id_by_name('정기연주회'), '콘서트홀 대관');
 INSERT INTO category (event_id, category_name)
-VALUES (2, '객원');
+VALUES (get_event_id_by_name('정기연주회'), '연습실 대관');
 INSERT INTO category (event_id, category_name)
-VALUES (2, '타악기 대여');
+VALUES (get_event_id_by_name('정기연주회'), '객원');
 INSERT INTO category (event_id, category_name)
-VALUES (2, '악보');
+VALUES (get_event_id_by_name('정기연주회'), '타악기 대여');
 INSERT INTO category (event_id, category_name)
-VALUES (2, '홍보');
+VALUES (get_event_id_by_name('정기연주회'), '악보');
 INSERT INTO category (event_id, category_name)
-VALUES (2, '당일 지출');
+VALUES (get_event_id_by_name('정기연주회'), '홍보');
 INSERT INTO category (event_id, category_name)
-VALUES (3, '숙소 대여');
+VALUES (get_event_id_by_name('정기연주회'), '당일 지출');
 INSERT INTO category (event_id, category_name)
-VALUES (3, '버스 대절');
+VALUES (get_event_id_by_name('뮤직캠프'), '숙소 대여');
 INSERT INTO category (event_id, category_name)
-VALUES (3, '식비');
+VALUES (get_event_id_by_name('뮤직캠프'), '버스 대절');
 INSERT INTO category (event_id, category_name)
-VALUES (4, '뒷풀이');
+VALUES (get_event_id_by_name('뮤직캠프'), '식비');
 INSERT INTO category (event_id, category_name)
-VALUES (5, '뒷풀이');
+VALUES (get_event_id_by_name('작은 연주회'), '뒷풀이');
+INSERT INTO category (event_id, category_name)
+VALUES (get_event_id_by_name('쿠코인의 밤'), '뒷풀이');
 
-CREATE OR REPLACE FUNCTION getcategoryidbyname(name IN VARCHAR2)
+CREATE OR REPLACE FUNCTION get_category_id_by_name(name IN VARCHAR2)
     RETURN NUMBER IS
     result NUMBER := 0;
 BEGIN
     SELECT category_id
     INTO result
     FROM category
-    where category_name = name;
+    WHERE category_name = name;
     RETURN result;
 END;
 
@@ -85,6 +98,16 @@ VALUES ('프로');
 INSERT INTO guest_type (guest_type_name)
 VALUES ('아마추어');
 
+CREATE OR REPLACE FUNCTION get_guest_type_id_by_name(name IN VARCHAR2)
+    RETURN NUMBER IS
+    result NUMBER := 0;
+BEGIN
+    SELECT guest_type_id
+    INTO result
+    FROM guest_type
+    WHERE guest_type_name = name;
+    RETURN result;
+END;
 
 -- MEMBER
 INSERT INTO member (member_name, department, gisu, student_id, phone_number)
@@ -128,68 +151,68 @@ FROM members;
 
 -- GUEST
 INSERT INTO guest (guest_type_id, guest_name, phone_number, account_number)
-WITH guests AS (SELECT 0, '배재혁', 01012341234, '하나12312312312345'
+WITH guests AS (SELECT get_guest_type_id_by_name('지휘자'), '배재혁', 01012341234, '하나12312312312345'
                 FROM dual
                 UNION ALL
-                SELECT 1, '프로객원1', 01012341234, '하나12312312312345'
+                SELECT get_guest_type_id_by_name('프로'), '프로객원1', 01012341234, '하나12312312312345'
                 FROM dual
                 UNION ALL
-                SELECT 1, '프로객원2', 01023452345, '국민12345612123456'
+                SELECT get_guest_type_id_by_name('프로'), '프로객원2', 01023452345, '국민12345612123456'
                 FROM dual
                 UNION ALL
-                SELECT 2, '아마객원1', 01034563456, '농협12345678912345'
+                SELECT get_guest_type_id_by_name('아마추어'), '아마객원1', 01034563456, '농협12345678912345'
                 FROM dual
                 UNION ALL
-                SELECT 2, '아마객원2', 01045674567, '신한98765432101234'
+                SELECT get_guest_type_id_by_name('아마추어'), '아마객원2', 01045674567, '신한98765432101234'
                 FROM dual)
 SELECT *
 FROM guests;
 
 -- TRANSACTION
 INSERT INTO transaction (category_id, transaction_description, transaction_amount)
-WITH transactions AS (SELECT getcategoryidbyname('악기 대여'), '이태권 첼로', 50000
+WITH transactions AS (SELECT get_category_id_by_name('악기 대여'), '이태권 첼로', 50000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 대여'), '이정현 바이올린', 50000
+                      SELECT get_category_id_by_name('악기 대여'), '이정현 바이올린', 50000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 대여'), '박은우 비올라', 50000
+                      SELECT get_category_id_by_name('악기 대여'), '박은우 비올라', 50000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 공구'), '박서영 바이올린', 260000
+                      SELECT get_category_id_by_name('악기 공구'), '박서영 바이올린', 260000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 공구'), '박채원 바이올린', 260000
+                      SELECT get_category_id_by_name('악기 공구'), '박채원 바이올린', 260000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 공구'), '김준수 바이올린', 260000
+                      SELECT get_category_id_by_name('악기 공구'), '김준수 바이올린', 260000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 공구'), '이수민 바이올린', 260000
+                      SELECT get_category_id_by_name('악기 공구'), '이수민 바이올린', 260000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 공구'), '이경서 첼로', 670000
+                      SELECT get_category_id_by_name('악기 공구'), '이경서 첼로', 670000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 공구'), '진성웅 바이올린', 260000
+                      SELECT get_category_id_by_name('악기 공구'), '진성웅 바이올린', 260000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 공구'), '양찬수 악기점: 바이올린 5 + 첼로 1', -1970000
+                      SELECT get_category_id_by_name('악기 공구'), '양찬수 악기점: 바이올린 5 + 첼로 1', -1970000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 공구'), '성민지 바이올린', 260000
+                      SELECT get_category_id_by_name('악기 공구'), '성민지 바이올린', 260000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('악기 공구'), '양찬수 악기점: 바이올린 1', -260000
+                      SELECT get_category_id_by_name('악기 공구'), '양찬수 악기점: 바이올린 1', -260000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('동아리 비품'), '회색 플라스틱 의자 5개', '쿠팡'
+                      SELECT get_category_id_by_name('동아리 비품'), '쿠팡 - 회색 플라스틱 의자 5개', -16000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('이전 학기 인수인계비'), '', 3000000
+                      SELECT get_category_id_by_name('이전 학기 인수인계비'), '', 3000000
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('동아리 기본지원금'), '', 350000
+                      SELECT get_category_id_by_name('동아리 기본지원금'), '', 350000
                       FROM dual)
 SELECT *
 FROM transactions;
@@ -197,58 +220,58 @@ FROM transactions;
 
 -- BUDGET
 INSERT INTO budget (category_id, budget_description, budget_amount, budget_date)
-WITH transactions AS (SELECT getcategoryidbyname('객원'), '오보에 I', -150000, TO_DATE('20230909', 'YYYYMMDD')
+WITH transactions AS (SELECT get_category_id_by_name('객원'), '오보에 I', -150000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '오보에 II', -150000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '오보에 II', -150000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '바순 I', -2500000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '바순 I', -2500000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '바순 II', -200000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '바순 II', -200000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '콘트라바순', -300000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '콘트라바순', -300000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '트럼펫 I', -250000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '트럼펫 I', -250000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '트럼펫 II', -150000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '트럼펫 II', -150000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '트럼본 I', -250000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '트럼본 I', -250000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '트럼본 II', -200000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '트럼본 II', -200000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '호른 I', -300000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '호른 I', -300000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '호른 II', -200000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '호른 II', -200000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '호른 III', -200000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '호른 III', -200000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '호른 IV', -150000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '호른 IV', -150000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '베이스 드럼', -200000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '베이스 드럼', -200000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '트라이앵글', -200000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '트라이앵글', -200000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '심벌즈', -200000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '심벌즈', -200000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('콘서트홀 대관'), '', -1200000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('콘서트홀 대관'), '', -1200000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual
                       UNION ALL
-                      SELECT getcategoryidbyname('객원'), '벨라필하모닉합창단', -1400000, TO_DATE('20230909', 'YYYYMMDD')
+                      SELECT get_category_id_by_name('객원'), '벨라필하모닉합창단', -1400000, TO_DATE('20230909', 'YYYYMMDD')
                       FROM dual)
 SELECT *
 FROM transactions;
@@ -258,13 +281,6 @@ BEGIN
     INSERT INTO fee (member_id, transaction_id) VALUES (3, 1);
     INSERT INTO fee (member_id, transaction_id) VALUES (4, 2);
     INSERT INTO fee (member_id, transaction_id) VALUES (5, 3);
-    INSERT INTO fee (member_id, transaction_id) VALUES (6, 4);
-    INSERT INTO fee (member_id, transaction_id) VALUES (7, 5);
-    INSERT INTO fee (member_id, transaction_id) VALUES (8, 6);
-    INSERT INTO fee (member_id, transaction_id) VALUES (9, 7);
-    INSERT INTO fee (member_id, transaction_id) VALUES (10, 8);
-    INSERT INTO fee (member_id, transaction_id) VALUES (11, 9);
-    INSERT INTO fee (member_id, transaction_id) VALUES (12, 11);
 END;
 
 -- GUEST PAY
@@ -275,15 +291,7 @@ END;
 
 -- PARTICIPATION LIST
 BEGIN
-    INSERT INTO participation_list (member_id, event_id) VALUES (1, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (2, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (3, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (4, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (5, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (6, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (7, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (8, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (9, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (10, 10);
-    INSERT INTO participation_list (member_id, event_id) VALUES (11, 10);
+    INSERT INTO participation_list (member_id, event_id) VALUES (1, get_event_id_by_name('정기연주회'));
+    INSERT INTO participation_list (member_id, event_id) VALUES (2, get_event_id_by_name('정기연주회'));
+    INSERT INTO participation_list (member_id, event_id) VALUES (3, get_event_id_by_name('정기연주회'));
 END;

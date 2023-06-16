@@ -53,7 +53,6 @@ SELECT event,
        SUM(transaction_amount)                      AS transaction_amount,
        SUM(transaction_amount) - SUM(budget_amount) AS gap
 FROM (SELECT et.event_type_name   AS event,
-             c.category_id,
              c.category_name      AS category,
              b.budget_amount      AS budget_amount,
              t.transaction_amount AS transaction_amount
@@ -62,7 +61,7 @@ FROM (SELECT et.event_type_name   AS event,
                FULL OUTER JOIN budget b ON c.category_id = b.category_id
                FULL OUTER JOIN event e ON c.event_id = e.event_id
                JOIN event_type et ON et.event_type_id = e.event_type_id)
-GROUP BY category_id;
+GROUP BY event, category;
 
 
 CREATE OR REPLACE VIEW member_vw AS
