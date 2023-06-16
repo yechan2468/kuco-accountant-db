@@ -8,7 +8,7 @@ BEGIN
     WHERE category_name = name;
     RETURN result;
 END;
-
+/
 
 
 CREATE OR REPLACE FUNCTION get_event_id_by_name(name IN VARCHAR2)
@@ -21,6 +21,7 @@ BEGIN
     WHERE event_type_name = name;
     RETURN result;
 END;
+/
 
 
 CREATE OR REPLACE FUNCTION get_guest_type_id_by_name(name IN VARCHAR2)
@@ -33,4 +34,4 @@ BEGIN
     WHERE guest_type_name = name;
     RETURN result;
 END;
-
+/
