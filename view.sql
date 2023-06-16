@@ -37,11 +37,11 @@ FROM transaction t
 
 
 CREATE OR REPLACE VIEW balance_vw AS
-SELECT (SELECT SUM(t.transaction_amount)
-        FROM transaction t
-        WHERE t.transaction_date <= SYSDATE) AS balance,
-       (SELECT SUM(t.transaction_amount)
-        FROM transaction t)                  AS expected_balance
+SELECT DISTINCT (SELECT SUM(t.transaction_amount)
+                 FROM transaction t
+                 WHERE t.transaction_date <= SYSDATE) AS balance,
+                (SELECT SUM(t.transaction_amount)
+                 FROM transaction t)                  AS expected_balance
 FROM transaction;
 
 
