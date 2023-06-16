@@ -26,16 +26,6 @@ BEGIN
         END LOOP;
 END;
 
-CREATE OR REPLACE FUNCTION get_event_id_by_name(name IN VARCHAR2)
-    RETURN NUMBER IS
-    result NUMBER := 0;
-BEGIN
-    SELECT event_type_id
-    INTO result
-    FROM event_type
-    WHERE event_type_name = name;
-    RETURN result;
-END;
 
 -- CATEGORY
 INSERT INTO category (event_id, category_name)
@@ -79,16 +69,6 @@ VALUES (get_event_id_by_name('작은 연주회'), '뒷풀이');
 INSERT INTO category (event_id, category_name)
 VALUES (get_event_id_by_name('쿠코인의 밤'), '뒷풀이');
 
-CREATE OR REPLACE FUNCTION get_category_id_by_name(name IN VARCHAR2)
-    RETURN NUMBER IS
-    result NUMBER := 0;
-BEGIN
-    SELECT category_id
-    INTO result
-    FROM category
-    WHERE category_name = name;
-    RETURN result;
-END;
 
 -- GUEST TYPE
 INSERT INTO guest_type (guest_type_name)
@@ -98,16 +78,6 @@ VALUES ('프로');
 INSERT INTO guest_type (guest_type_name)
 VALUES ('아마추어');
 
-CREATE OR REPLACE FUNCTION get_guest_type_id_by_name(name IN VARCHAR2)
-    RETURN NUMBER IS
-    result NUMBER := 0;
-BEGIN
-    SELECT guest_type_id
-    INTO result
-    FROM guest_type
-    WHERE guest_type_name = name;
-    RETURN result;
-END;
 
 -- MEMBER
 INSERT INTO member (member_name, department, gisu, student_id, phone_number)
