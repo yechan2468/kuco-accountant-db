@@ -1,6 +1,7 @@
 /*===================
     DATA INSERTION
 ====================*/
+
 -- EVENT TYPE
 INSERT INTO event_type (event_type_name)
 VALUES ('동아리 운영');
